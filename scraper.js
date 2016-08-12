@@ -1,59 +1,76 @@
-// This is a template for a Node.js scraper on morph.io (https://morph.io)
+var DatabaseUtility = require('./database_utility.js')
+var osmGhanaScraper = require('./overpass-turbo.eu/scraper.js')
+var GhanaHospitalsScraper = require('./ghanahospitals.org/scraper.js')
+var ghanaweb = require('./ghanaweb.com/scraper.js')
+var ghanaGov = require('./ghana.gov.gh/scraper.js')
+var businessGhana = require('./businessghana.com/scraper.js')
+var graduates = require('./graduates.com/scraper.js')
 
-var cheerio = require("cheerio");
-var request = require("request");
-var sqlite3 = require("sqlite3").verbose();
-
-function initDatabase(callback) {
-	// Set up sqlite database.
-	var db = new sqlite3.Database("data.sqlite");
-	db.serialize(function() {
-		db.run("CREATE TABLE IF NOT EXISTS data (name TEXT)");
-		callback(db);
-	});
+var model = {
+  id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+  latitude: 'TEXT',
+  longitude: 'TEXT',
+  name: 'TEXT',
+  building_type: 'TEXT',
+  telephone: 'TEXT',
+  telephone2: 'TEXT',
+  telephone3: 'TEXT',
+  telephone4: 'TEXT',
+  telephone5: 'TEXT',
+  mobilephone: 'TEXT',
+  mobilephone2: 'TEXT',
+  mobilephone3: 'TEXT',
+  mobilephone4: 'TEXT',
+  mobilephone5: 'TEXT',
+  fax: 'TEXT',
+  fax2: 'TEXT',
+  fax3: 'TEXT',
+  fax4: 'TEXT',
+  fax5: 'TEXT',
+  website: 'TEXT',
+  website2: 'TEXT',
+  website3: 'TEXT',
+  website4: 'TEXT',
+  website5: 'TEXT',
+  email: 'TEXT',
+  email2: 'TEXT',
+  email3: 'TEXT',
+  email4: 'TEXT',
+  email5: 'TEXT',
+  opening_hours: 'TEXT',
+  postcode: 'TEXT',
+  house_number: 'TEXT',
+  street_name: 'TEXT',
+  region: 'TEXT',
+  district: 'TEXT',
+  city: 'TEXT',
+  address: 'TEXT',
+  address_additional: 'TEXT',
+  geo_json: 'BLOB'
 }
 
-function updateRow(db, value) {
-	// Insert some data.
-	var statement = db.prepare("INSERT INTO data VALUES (?)");
-	statement.run(value);
-	statement.finalize();
+var db = new DatabaseUtility(model)
+
+db.deleteDatabase(prepareDatabase)
+
+function prepareDatabase () {
+  db.createDatabase(runScrapers)
 }
 
-function readRows(db) {
-	// Read some data.
-	db.each("SELECT rowid AS id, name FROM data", function(err, row) {
-		console.log(row.id + ": " + row.name);
-	});
+function runScrapers () {
+  osmGhanaScraper.run(db, runGhanaweb)
 }
 
-function fetchPage(url, callback) {
-	// Use request to read in pages.
-	request(url, function (error, response, body) {
-		if (error) {
-			console.log("Error requesting page: " + error);
-			return;
-		}
-
-		callback(body);
-	});
+function runGhanaweb () {
+  ghanaweb.run(db, runGhanaGov)
 }
 
-function run(db) {
-	// Use request to read in pages.
-	fetchPage("https://morph.io", function (body) {
-		// Use cheerio to find things in the page with css selectors.
-		var $ = cheerio.load(body);
-
-		var elements = $("div.media-body span.p-name").each(function () {
-			var value = $(this).text().trim();
-			updateRow(db, value);
-		});
-
-		readRows(db);
-
-		db.close();
-	});
+function runGhanaGov () {
+  ghanaGov.run(db, runBusinessGhana)
 }
 
-initDatabase(run);
+function runBusinessGhana () {
+  businessGhana.run(db, function () {
+    GhanaHospitalsScraper.run(db)
+  })
+}

@@ -37,7 +37,7 @@ function run (db, callbackScraper) {
     }
     $ = undefined
 
-    numberOfPages = numberLastPage - 1 * 10
+    numberOfPages = (numberLastPage - 1) * 10
 
     pages.forEach(function (link) {
       getPage(link)

@@ -103,7 +103,7 @@ function run (db, callbackScraper) {
     console.log('Overpass - Insert data into database.')
     setTimeout(function () {
       signalingEndFunc()
-    }, 2000)
+    }, 5000)
   }
 
   function createDatabaseObject (data, element) {

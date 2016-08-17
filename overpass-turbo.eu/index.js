@@ -124,7 +124,7 @@ function run (db, callbackScraper) {
       }
     })
 
-    databaseObject['building_type'] = data['building_type']
+    databaseObject['type'] = data['building_type']
     databaseObject['country'] = data['country']
     return databaseObject
   }

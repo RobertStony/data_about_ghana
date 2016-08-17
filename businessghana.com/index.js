@@ -175,7 +175,7 @@ function run (db, callbackScraper) {
     var databaseObject = {}
 
     databaseObject['name'] = informationObject.name
-    databaseObject['building_type'] = informationObject.type
+    databaseObject['type'] = informationObject.type
     dataConverter.convertTelephone(informationObject.telephoneNumbers, databaseObject)
     dataConverter.convertFax(informationObject.faxNumbers, databaseObject)
     dataConverter.convertEmail(informationObject.emailAddresses, databaseObject)

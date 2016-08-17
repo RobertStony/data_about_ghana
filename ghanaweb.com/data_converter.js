@@ -72,7 +72,7 @@ DataConverter.prototype.convertBuildingType = function (value, dataObject) {
   type = type.substring(0, type.length - 2).trim()
 
   if (type !== '') {
-    dataObject['building_type'] = type
+    dataObject['type'] = type
   }
 }
 

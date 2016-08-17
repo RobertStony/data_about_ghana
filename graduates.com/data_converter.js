@@ -1,5 +1,3 @@
-var replaceall = require('replaceall')
-
 var DataConverter = function () {}
 
 DataConverter.prototype.convertTelephone = function (value, dataObject) {

@@ -32,7 +32,7 @@ DataConverter.prototype.convertBuildingType = function (key, value, dataObject) 
   }
 
   if (buildingArray.length !== 0) {
-    insertIntoDataObject('building_type', buildingArray, dataObject)
+    insertIntoDataObject('type', buildingArray, dataObject)
   }
 }
 

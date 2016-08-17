@@ -95,12 +95,6 @@ function insertIntoDataObject (key, values, dataObject) {
   }
 }
 
-function filterDuplicates (array) {
-  return array.filter(function (element, index, arr) {
-    return arr.indexOf(element) === index
-  })
-}
-
 function getOrElse (value, elseValue) {
   if (typeof value === 'undefined' || value === null) {
     return elseValue

@@ -25,7 +25,7 @@ DataConverter.prototype.convertBuildingType = function (key, value, dataObject) 
   }
 
   if (buildingArray.length !== 0) {
-    dataObject['building_type'] = buildingArray[0]
+    dataObject['type'] = buildingArray[0]
   }
 }
 
@@ -39,6 +39,19 @@ DataConverter.prototype.convertName = function (key, value, dataObject) {
 
   if (nameArray.length !== 0) {
     dataObject['name'] = nameArray[0]
+  }
+}
+
+DataConverter.prototype.convertService = function (key, value, dataObject) {
+  var service = []
+  switch (key.trim().toLowerCase()) {
+    case 'services':
+      service.push(value.trim())
+      break
+  }
+
+  if (service.length !== 0) {
+    dataObject['service'] = service[0]
   }
 }
 

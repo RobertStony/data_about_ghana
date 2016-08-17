@@ -4,8 +4,8 @@ var db = null
 var model = null
 var insertStatement = null
 
-var DatabaseUtility = function (dataModel) {
-  db = new sqlite3.Database('data.sqlite')
+var DatabaseUtility = function (dataModel, dataName) {
+  db = new sqlite3.Database(dataName)
   model = dataModel
   insertStatement = createInsertStatement()
 }
@@ -30,6 +30,10 @@ DatabaseUtility.prototype.createDatabase = function (callback) {
   })
 }
 
+DatabaseUtility.prototype.readRows = function (callback) {
+  db.all('SELECT * FROM data', callback)
+}
+
 DatabaseUtility.prototype.insertRow = function (databaseObject) {
   var statement = db.prepare(insertStatement)
 
@@ -43,6 +47,14 @@ DatabaseUtility.prototype.insertRow = function (databaseObject) {
 
   statement.run(rowObject)
   statement.finalize()
+}
+
+DatabaseUtility.prototype.getRow = function (id, callback) {
+  db.get('SELECT * FROM data WHERE id = ' + id, callback)
+}
+
+DatabaseUtility.prototype.deleteRow = function (id, callback) {
+  db.get('DELETE FROM data WHERE id = ' + id, callback)
 }
 
 DatabaseUtility.prototype.serialize = function (callback) {

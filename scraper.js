@@ -1,17 +1,18 @@
 var DatabaseUtility = require('./database_utility.js')
-var osmGhanaScraper = require('./overpass-turbo.eu/scraper.js')
-var GhanaHospitalsScraper = require('./ghanahospitals.org/scraper.js')
-var ghanaweb = require('./ghanaweb.com/scraper.js')
-var ghanaGov = require('./ghana.gov.gh/scraper.js')
-var businessGhana = require('./businessghana.com/scraper.js')
-var graduates = require('./graduates.com/scraper.js')
+var osmGhana = require('./overpass-turbo.eu/index.js')
+var ghanaHospitals = require('./ghanahospitals.org/index.js')
+var ghanaweb = require('./ghanaweb.com/index.js')
+var ghanaGov = require('./ghana.gov.gh/index.js')
+var businessGhana = require('./businessghana.com/index.js')
+var graduates = require('./graduates.com/index.js')
+var entityResolution = require('./entity_resolution.js')
 
 var model = {
   id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
   latitude: 'TEXT',
   longitude: 'TEXT',
   name: 'TEXT',
-  building_type: 'TEXT',
+  type: 'TEXT',
   telephone: 'TEXT',
   telephone2: 'TEXT',
   telephone3: 'TEXT',
@@ -38,6 +39,7 @@ var model = {
   email4: 'TEXT',
   email5: 'TEXT',
   opening_hours: 'TEXT',
+  service: 'TEXT',
   postcode: 'TEXT',
   house_number: 'TEXT',
   street_name: 'TEXT',
@@ -49,7 +51,7 @@ var model = {
   geo_json: 'BLOB'
 }
 
-var db = new DatabaseUtility(model)
+var db = new DatabaseUtility(model, 'data.sqlite')
 
 db.deleteDatabase(prepareDatabase)
 
@@ -58,7 +60,7 @@ function prepareDatabase () {
 }
 
 function runScrapers () {
-  osmGhanaScraper.run(db, runGhanaweb)
+  osmGhana.run(db, runGhanaweb)
 }
 
 function runGhanaweb () {
@@ -70,7 +72,17 @@ function runGhanaGov () {
 }
 
 function runBusinessGhana () {
-  businessGhana.run(db, function () {
-    GhanaHospitalsScraper.run(db)
-  })
+  businessGhana.run(db, runGhanaHospitals)
+}
+
+function runGhanaHospitals () {
+  ghanaHospitals.run(db, runGraduates)
+}
+
+function runGraduates () {
+  graduates.run(db, runEntityResolution)
+}
+
+function runEntityResolution () {
+  entityResolution.run(db)
 }

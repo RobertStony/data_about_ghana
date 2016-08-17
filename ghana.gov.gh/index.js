@@ -25,7 +25,7 @@ function run (db, callbackScraper) {
       dataConverter.convertName($(this).children().slice(0, 1).text(), databaseObject)
       dataConverter.convertWebsite($(this).children('td').children('p').children('strong').children('a').attr('href'), databaseObject)
       dataConverter.convertAddress($(this).children('td').slice(1, 2).children('p').children('strong').eq(0).text(), databaseObject)
-      databaseObject['building_type'] = 'government institution'
+      databaseObject['type'] = 'government institution'
       dataConverter.convertTelephone($(this).children('td').slice(2, 3).text(), databaseObject)
 
       db.insertRow(databaseObject)

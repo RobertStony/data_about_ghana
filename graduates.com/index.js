@@ -46,7 +46,7 @@ function run (db, callbackScraper) {
 
       $ = undefined
 
-      numberOfPages += 1
+      numberOfPages += districts.length
 
       districts.forEach(function (link) {
         counter += policy

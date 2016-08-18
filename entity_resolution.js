@@ -353,34 +353,39 @@ function run (db) {
         newData[element.id] = element
         return newData
       }, {})
-      updateEntities.forEach(function (matchSchema) {
-        var firstEntityId = matchSchema['id_entity1']
-        var secondEntityId = matchSchema['id_entity2']
 
-        var dataObject = Object.keys(matchSchema).reduce(function (newDataObject, key) {
-          if (matchSchema[key] === 1) {
-            newDataObject[key] = data[firstEntityId][key]
-          } else if (matchSchema[key] === 2) {
-            newDataObject[key] = data[secondEntityId][key]
-          }
-          return newDataObject
-        }, {})
+      try {
+        updateEntities.forEach(function (matchSchema) {
+          var firstEntityId = matchSchema['id_entity1']
+          var secondEntityId = matchSchema['id_entity2']
 
-        dataObject = insertMissingValues(data[firstEntityId], dataObject)
-        dataObject = insertMissingValues(data[secondEntityId], dataObject)
+          var dataObject = Object.keys(matchSchema).reduce(function (newDataObject, key) {
+            if (matchSchema[key] === 1) {
+              newDataObject[key] = data[firstEntityId][key]
+            } else if (matchSchema[key] === 2) {
+              newDataObject[key] = data[secondEntityId][key]
+            }
+            return newDataObject
+          }, {})
 
-        console.log('replace entities:\n' +
-          JSON.stringify(data[firstEntityId]) + '\n\n' +
-          JSON.stringify(data[secondEntityId]) + '\n\n' +
-          JSON.stringify(dataObject) + '\n')
+          dataObject = insertMissingValues(data[firstEntityId], dataObject)
+          dataObject = insertMissingValues(data[secondEntityId], dataObject)
 
-        db.insertRow(dataObject)
-        db.deleteRow(firstEntityId)
-        db.deleteRow(secondEntityId)
-      })
-      console.log(updateEntities.length + ' entities replaced.')
-      if (updateEntities.length > 0) {
-        run(db)
+          console.log('replace entities:\n' +
+            JSON.stringify(data[firstEntityId]) + '\n\n' +
+            JSON.stringify(data[secondEntityId]) + '\n\n' +
+            JSON.stringify(dataObject) + '\n')
+
+          db.insertRow(dataObject)
+          db.deleteRow(firstEntityId)
+          db.deleteRow(secondEntityId)
+        })
+        console.log(updateEntities.length + ' entities replaced.')
+        if (updateEntities.length > 0) {
+          run(db)
+        }
+      } catch (ex) {
+        console.log(ex, data[firstEntityId], data[secondEntityId])
       }
     })
   }

@@ -380,7 +380,7 @@ function run (db) {
       })
       console.log(updateEntities.length + ' entities replaced.')
       if (updateEntities.length > 0) {
-        run()
+        run(db)
       }
     })
   }
